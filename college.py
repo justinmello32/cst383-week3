@@ -252,12 +252,12 @@ df['Median'].max() / df['Median'].min()
 # MINING AND MINERAL ENGINEERING              75000  55000   90000
 # METALLURGICAL ENGINEERING                   73000  50000  105000
 # NAVAL ARCHITECTURE AND MARINE ENGINEERING   70000  43000   80000
-
+df.nlargest(10, 'Median')[['Median','P25th','P75th']]
 
 #@ 17
 # Repeat the previous problem, but compute the 10 majors with the
 # lowest median earnings, and sort with lowest meadian salary first
-
+df.nlargest(10, 'Median')[['Median','P25th','P75th']]
 
 #@ 18
 # For each major, compute the fraction of people who have a non-college
@@ -269,7 +269,7 @@ df['Median'].max() / df['Median'].min()
 # COSMETOLOGY SERVICES AND CULINARY ARTS                               0.702569
 # NUCLEAR, INDUSTRIAL RADIOLOGY, AND BIOLOGICAL TECHNOLOGIES           0.697070
 # ELECTRICAL, MECHANICAL, AND PRECISION TECHNOLOGIES AND PRODUCTION    0.681314
-
+(df['Non_college_jobs'] / df['Total']).nlargest(10)
 
 #@ 19
 # For each major category, compute the total number of people
@@ -280,7 +280,7 @@ df['Median'].max() / df['Median'].min()
 # Major_category
 # Business                               1302376.0
 # Humanities & Liberal Arts               713468.0
-
+df.groupby('Major_category')['Total'].sum().sort_values(ascending = False)
 
 #@ 20
 # For each major category, compute the fraction of people
@@ -291,7 +291,7 @@ df['Median'].max() / df['Median'].min()
 # Business                               0.192328
 # Humanities & Liberal Arts              0.105361
 # Education                              0.082569
-
+df.groupby('Major_category')['Total'].apply(lambda x : x.sum() / df['Total'].sum()).sort_values(ascending=False)
 
 #@ 21
 # Compute the number of majors associated with each major
@@ -301,14 +301,16 @@ df['Median'].max() / df['Median'].min()
 # Humanities & Liberal Arts              15
 # Biology & Life Science                 14
 #
-
+df.groupby('Major_category')['Total'].count().sort_values(ascending = False)
 
 #@ 22
 # Add a new variable 'HighShareWomen' to the data frame.
 # This variable should be True if ShareWomen > 0.50, and
 # False otherwise.  Then compute the first five values in
 # the HishShareWoman column.
-
+HighShareWomen = (df['ShareWomen'] > 0.50).values
+df['HighShareWomen'] = HighShareWomen
+df['HighShareWomen'][0:5]
 
 ###############################################################
 # In the remaining problems you can assume that df additionally
@@ -319,7 +321,7 @@ df['Median'].max() / df['Median'].min()
 #@ 23
 # Compute the fraction of majors that have a high share of women.
 # Your result should be a number close to 0.56
-
+df['HighShareWomen'].mean()
 
 #@ 24
 # For each major, compute the fraction of those working in
@@ -332,7 +334,7 @@ df['Median'].max() / df['Median'].min()
 # MISCELLANEOUS FINE ARTS                   0.226048
 # CLINICAL PSYCHOLOGY                       0.219168
 # STUDIO ARTS                               0.211227
-
+(df['Low_wage_jobs'] / df['Total']).nlargest(10)
 
 #@ 25
 # For each major category, compute the maximum of the median
@@ -343,7 +345,7 @@ df['Median'].max() / df['Median'].min()
 # Engineering                            110000
 # Physical Sciences                       62000
 # Business                                62000
-
+df.groupby('Major_category')['Median'].max().sort_values(ascending = False)
 
 #@ 26
 # Compute the average median salary for each major category,
@@ -353,7 +355,7 @@ df['Median'].max() / df['Median'].min()
 # Psychology & Social Work               30100.000000
 # Humanities & Liberal Arts              31913.333333
 # Education                              32350.000000
-
+df.groupby('Major_category')['Median'].mean().sort_values()
 
 # The answer to the previous question does not accurately
 # represent the median salary for a major category, because
@@ -370,7 +372,8 @@ df['Median'].max() / df['Median'].min()
 # associated with the major, and then compute the first five values in the new
 # column.
 # The sum of the new column should be 1.0 or very close to 1.0.
-
+df['Major_share'] = df['Total'] / df['Total'].sum()
+df['Major_share'][0:5]
 
 ###############################################################
 # In the remaining problems you can assume that df additionally
